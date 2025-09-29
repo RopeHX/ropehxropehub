@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RopeHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Beta Banner (direkt nach <body>) -->
+    <div id="betaBanner" class="beta-banner hidden">
+        <div class="beta-banner-content">
+            <div class="beta-icon">
+                <i class="fas fa-flask"></i>
+            </div>
+            <div class="beta-text">
+                <span class="beta-label">BETA VERSION</span>
+                <span class="beta-message">🚧Diese Plattform befindet sich noch in der Entwicklung 🚧</span>
+            </div>
+            <button class="beta-close" onclick="window.app?.uiManager?.closeBetaBanner()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <div class="logo">
+                <h1>RopeHub</h1>
+                <p data-i18n="connect_share"></p>
+            </div>
+            
+            <!-- Login Form -->
+            <form id="loginForm" class="auth-form">
+                <h2 data-i18n="welcome_back">Willkommen zurück!</h2>
+                <input type="email" id="loginEmail" data-i18n-placeholder="email" placeholder="E-Mail" required>
+                <input type="password" id="loginPassword" data-i18n-placeholder="password" placeholder="Passwort" required>
+                <button type="submit" class="btn-primary" data-i18n="sign_in">Anmelden</button>
+                <div class="auth-switch">
+                    <p><span data-i18n="no_account">Noch kein Konto?</span> <a href="#" id="showRegister" class="link-btn" data-i18n="create_one">Hier erstellen</a></p>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="auth-form hidden">
+                <h2 data-i18n="join_ropehub">Bei RopeHub anmelden</h2>
+                <input type="text" id="registerName" data-i18n-placeholder="full_name" placeholder="Vollständiger Name" required>
+                <input type="email" id="registerEmail" data-i18n-placeholder="email" placeholder="E-Mail" required>
+                <input type="password" id="registerPassword" data-i18n-placeholder="password" placeholder="Passwort" required>
+                <button type="submit" class="btn-primary" data-i18n="create_account">Konto erstellen</button>
+                <div class="auth-switch">
+                    <p><span data-i18n="have_account">Bereits ein Konto?</span> <a href="#" id="showLogin" class="link-btn" data-i18n="sign_in_link">Hier anmelden</a></p>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="mainApp" class="main-app hidden">
+        <!-- Topbar -->
+        <div class="topbar">
+            <div class="topbar-left">
+                <div class="logo-mini">
+                    <i class="fas fa-comments logo-icon"></i>
+                    <span class="logo-text">RopeHub</span>
+                </div>
+            </div>
+            
+            <div class="topbar-center">
+                <div class="search-bar">
+                    <input type="text" class="search-input" data-i18n-placeholder="search_placeholder" placeholder="Suchen...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+            </div>
+            
+            <div class="topbar-right">
+                <button class="icon-btn"><i class="fas fa-bell"></i></button>
+                <div class="user-menu" id="userMenu">
+                    <img id="userAvatar" class="user-avatar" src="" alt="Avatar">
+                    <div class="user-info">
+                        <span id="userName" class="user-name">User</span>
+                        <div class="user-status">
+                            <div class="status-dot online"></div>
+                            <span data-i18n="online">Online</span>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-down user-dropdown-arrow"></i>
+                </div>
+                
+                <!-- User Dropdown -->
+                <div class="user-dropdown hidden" id="userDropdown">
+                    <div class="dropdown-section">
+                        <div class="dropdown-user-info">
+                            <img id="dropdownAvatar" class="dropdown-avatar" src="" alt="Avatar">
+                            <div class="dropdown-user-details">
+                                <div id="dropdownName" class="dropdown-name">Username</div>
+                                <div id="dropdownEmail" class="dropdown-email">user@example.com</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    <div class="dropdown-section">
+                        <div class="dropdown-item" data-action="profile">
+                            <i class="fas fa-user"></i>
+                            <span data-i18n="edit_profile">Profil bearbeiten</span>
+                        </div>
+                        <div class="dropdown-item" data-action="settings">
+                            <i class="fas fa-cog"></i>
+                            <span data-i18n="settings">Einstellungen</span>
+                        </div>
+                        <div class="dropdown-item" data-action="appearance">
+                            <i class="fas fa-palette"></i>
+                            <span data-i18n="appearance">Erscheinungsbild</span>
+                        </div>
+                    </div>
+                    
+                    <div class="dropdown-divider"></div>
+                    
+                    <div class="dropdown-section">
+                        <div class="dropdown-item danger" data-action="logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span data-i18n="logout_menu">Abmelden</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="nav-items">
+                <a href="#" class="nav-item active" data-view="feed">
+                    <i class="nav-icon fas fa-home"></i>
+                    <span data-i18n="feed">Feed</span>
+                </a>
+                <a href="#" class="nav-item" data-view="dm">
+                    <i class="nav-icon fas fa-comments"></i>
+                    <span data-i18n="messages">Nachrichten</span>
+                </a>
+                <a href="#" class="nav-item" data-view="friends">
+                    <i class="nav-icon fas fa-users"></i>
+                    <span data-i18n="friends">Freunde</span>
+                </a>
+                <a href="#" class="nav-item" data-view="servers">
+                    <i class="nav-icon fas fa-server"></i>
+                    <span data-i18n="servers">Server</span>
+                </a>
+            </div>
+            
+            <div class="nav-bottom">
+                <a href="#" class="nav-item logout-btn" onclick="window.app?.authManager?.handleLogout()">
+                    <i class="nav-icon fas fa-sign-out-alt"></i>
+                    <span data-i18n="logout">Abmelden</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Feed View -->
+            <div id="feedView" class="view active">
+                <div class="view-header">
+                    <h1 data-i18n="feed">Feed</h1>
+                    <button class="btn-primary" id="createPostBtn">
+                        <i class="fas fa-plus"></i> <span data-i18n="create_post">Beitrag erstellen</span>
+                    </button>
+                </div>
+                
+                <!-- Post Composer -->
+                <div id="postComposer" class="post-composer hidden">
+                    <div class="composer-header">
+                        <img class="composer-avatar" src="" alt="Avatar">
+                        <div class="composer-input-container">
+                            <textarea id="postContent" class="composer-input" data-i18n-placeholder="whats_on_mind" placeholder="Was beschäftigt dich?"></textarea>
+                            <div id="mediaPreview" class="media-preview hidden"></div>
+                        </div>
+                    </div>
+                    <div class="composer-actions">
+                        <div class="composer-options">
+                            <button class="option-btn" data-type="image" title="Bild hinzufügen">
+                                <i class="fas fa-image"></i>
+                            </button>
+                            <button class="option-btn" data-type="emoji" title="Emoji hinzufügen">
+                                <i class="fas fa-smile"></i>
+                            </button>
+                        </div>
+                        <div class="composer-buttons">
+                            <button class="btn-secondary" id="cancelPost" data-i18n="cancel">Abbrechen</button>
+                            <button class="btn-primary" id="submitPost" data-i18n="post">Posten</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Hidden file inputs -->
+                    <input type="file" id="imageUpload" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="feed-container" id="feedContainer">
+                    <!-- Posts will be loaded here -->
+                </div>
+            </div>
+
+            <!-- DM View -->
+            <div id="dmView" class="view">
+                <div class="view-header">
+                    <h1 data-i18n="messages">Nachrichten</h1>
+                    <button id="newDmBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i>
+                        <span data-i18n="new_message">Neue Nachricht</span>
+                    </button>
+                </div>
+                <div class="dm-layout">
+                    <div class="dm-sidebar">
+                        <div class="dm-search">
+                            <input type="text" id="dmSearch" placeholder="Konversationen durchsuchen..." class="search-input">
+                        </div>
+                        <div class="dm-conversations" id="dmConversations">
+                            <!-- Conversations will be loaded here -->
+                        </div>
+                    </div>
+                    <div class="dm-main">
+                        <div id="dmChat" class="dm-chat-area">
+                            <div class="dm-welcome">
+                                <i class="fas fa-comments"></i>
+                                <h3>Wähle eine Konversation</h3>
+                                <p>Oder starte eine neue Unterhaltung</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Friends View -->
+            <div id="friendsView" class="view">
+                <div class="view-header">
+                    <h1 data-i18n="friends">Freunde</h1>
+                    <button id="addFriendBtn" class="btn-primary">
+                        <i class="fas fa-user-plus"></i>
+                        <span data-i18n="add_friend">Freunde hinzufügen</span>
+                    </button>
+                </div>
+                
+                <div class="friends-container">
+                    <!-- Friends Tabs -->
+                    <div class="friends-tabs">
+                        <button class="friends-tab active" data-tab="all">
+                            <i class="fas fa-users"></i>
+                            <span data-i18n="all_friends">Alle Freunde</span>
+                            <span class="tab-count" id="allFriendsCount">0</span>
+                        </button>
+                        <button class="friends-tab" data-tab="online">
+                            <i class="fas fa-circle"></i>
+                            <span data-i18n="online_friends">Online</span>
+                            <span class="tab-count" id="onlineFriendsCount">0</span>
+                        </button>
+                        <button class="friends-tab" data-tab="pending">
+                            <i class="fas fa-clock"></i>
+                            <span data-i18n="pending_requests">Ausstehend</span>
+                            <span class="tab-count" id="pendingRequestsCount">0</span>
+                        </button>
+                    </div>
+                    
+                    <!-- Friends Content -->
+                    <div class="friends-content">
+                        <!-- All Friends Tab -->
+                        <div id="allFriendsTab" class="friends-tab-content active">
+                            <div id="allFriendsList" class="friends-list">
+                                <!-- Friends will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Online Friends Tab -->
+                        <div id="onlineFriendsTab" class="friends-tab-content">
+                            <div id="onlineFriendsList" class="friends-list">
+                                <!-- Online friends will be loaded here -->
+                            </div>
+                        </div>
+                        
+                        <!-- Pending Requests Tab -->
+                        <div id="pendingRequestsTab" class="friends-tab-content">
+                            <div id="pendingRequestsList" class="friends-list">
+                                <!-- Pending requests will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Servers View -->
+            <div id="serversView" class="view">
+                <div class="view-header">
+                    <h1 data-i18n="servers">Server</h1>
+                </div>
+                <div class="servers-container">
+                    <p data-i18n="servers_coming_soon">Server-Entdeckung kommt bald...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-storage-compat.js"></script>
+    
+    <script src="js/firebase.js"></script>
+    <script src="js/i18n.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/feed.js"></script>
+    <script src="js/dm.js"></script>
+    <script src="js/friends.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
